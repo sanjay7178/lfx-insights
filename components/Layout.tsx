@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutGrid, BarChart3, Search, Github } from 'lucide-react';
+import { LayoutGrid, BarChart3, Search, Github, Star } from 'lucide-react';
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -8,6 +8,18 @@ interface LayoutProps {
 
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
     const location = useLocation();
+    const [starCount, setStarCount] = useState<number | null>(null);
+
+    useEffect(() => {
+        fetch('https://api.github.com/repos/sanjay7178/lfx-insights')
+            .then(res => res.json())
+            .then(data => {
+                if (typeof data.stargazers_count === 'number') {
+                    setStarCount(data.stargazers_count);
+                }
+            })
+            .catch(err => console.error('Failed to fetch GitHub stars', err));
+    }, []);
 
     const isActive = (path: string) => {
         return location.pathname === path ? "text-blue-400 bg-slate-800" : "text-slate-400 hover:text-slate-100 hover:bg-slate-800";
@@ -37,8 +49,22 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                     </nav>
 
                     <div className="flex items-center gap-4">
-                         <a href="https://github.com/cncf/mentoring" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">
-                            <Github size={20} />
+                         <a 
+                            href="https://github.com/sanjay7178/lfx-insights" 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="flex items-center gap-2 text-slate-400 hover:text-white transition-all bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-full px-4 py-1.5 text-sm font-medium group"
+                         >
+                            <Github size={18} />
+                            {starCount !== null && (
+                                <>
+                                    <span className="w-px h-4 bg-slate-700 mx-1"></span>
+                                    <span className="flex items-center gap-1.5">
+                                        <span className="font-mono font-semibold text-slate-200 group-hover:text-white transition-colors">{starCount}</span>
+                                        <Star size={14} className="text-amber-400 fill-amber-400" />
+                                    </span>
+                                </>
+                            )}
                          </a>
                     </div>
                 </div>
