@@ -1,0 +1,5 @@
+{
+  "name": "LFX Insights",
+  "description": "A dashboard and search engine for CNCF LFX Mentorship programs, visualizing historical data and projects.",
+  "requestFramePermissions": []
+}
